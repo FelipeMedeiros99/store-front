@@ -12,7 +12,6 @@ import TelaAdmin from './Components/TelaAdmin';
 
 function App(){
     return(
-
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to={"/login"} />} />
