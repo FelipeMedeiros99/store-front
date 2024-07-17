@@ -18,6 +18,7 @@ export default function TelaLogin() {
     const obrigatorio = [true, true]
     const inputsProps = {estado: inputs, setEstado: setInputs, tipos: tipos, minimos: minimos, obrigatorio: obrigatorio, aguardandoRequisicao: aguardandoRequisicao}
     const navigate = useNavigate()
+   
     // functions
     async function submissao(e){
         e.preventDefault()
@@ -33,9 +34,10 @@ export default function TelaLogin() {
             // desativando inputs e botoes
             setAguardandoRequisicao(true)
             const resposta = await axios.post("https://store-back-0hxp.onrender.com/login", dadosUsuario)
-            console.log(resposta)  
             setMensagemErro({visivel: false, mensagem: ""});
-            if(resposta.status===200){
+            if(resposta.status===200){ 
+                // salvando dados no localStorage
+                localStorage.setItem("store", JSON.stringify(resposta.data))
                 navigate("/home")
             }
         }catch(e){

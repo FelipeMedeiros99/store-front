@@ -31,7 +31,7 @@ export default function TelaCadastro() {
         }
 
         if(dadosUsuario.senha!==dadosUsuario.confirmar){
-            setMensagemErro({visivel: true, mensagem:"A confirmação precisa ser igual a senha"})
+            setMensagemErro({visivel: true, mensagem:"As senhas não coincidem"})
             return
         }
         // enviando para o servidor
