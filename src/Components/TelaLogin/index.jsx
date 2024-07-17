@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 
 
@@ -17,7 +17,7 @@ export default function TelaLogin() {
     const minimos = [7, 6]
     const obrigatorio = [true, true]
     const inputsProps = {estado: inputs, setEstado: setInputs, tipos: tipos, minimos: minimos, obrigatorio: obrigatorio, aguardandoRequisicao: aguardandoRequisicao}
-
+    const navigate = useNavigate()
     // functions
     async function submissao(e){
         e.preventDefault()
@@ -35,6 +35,9 @@ export default function TelaLogin() {
             const resposta = await axios.post("https://store-back-0hxp.onrender.com/login", dadosUsuario)
             console.log(resposta)  
             setMensagemErro({visivel: false, mensagem: ""});
+            if(resposta.status===200){
+                navigate("/home")
+            }
         }catch(e){
             const respostaErro = e.response.data;
             setMensagemErro({visivel: true, mensagem: respostaErro});
