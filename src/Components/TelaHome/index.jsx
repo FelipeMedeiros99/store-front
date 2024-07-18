@@ -1,34 +1,28 @@
 import { useState } from "react";
+import styled from "styled-components";
 
-import MainStyle from "../../StyleComponents/MainStyle";
-
+import JanelaProduto from "../JanelaProduto";
+import RenderProdutos from "../RenderProdutos";
 
 export default function TelaHome() {
     // states 
+    const [janelaProdutoAtiva, setJanelaProdutoAtiva] = useState(false);
+    const [produtoEmDestaque, setProdutoEmDestaque] = useState({});
 
     // vars
     const dadosRecebidos = JSON.parse(localStorage.store);
     const { produtos, token } = dadosRecebidos;
-
+    const propsRenderProdutos = {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque};
+   
     return (
         <MainStyle >
-            <p>Tela Home</p>
-            {produtos.map((produto) => {
-                const { nome, imagem, id, descricao, especificacoes, preco } = produto
-                console.log(produto)
-                return (
-
-                    <div className="container-produto">
-                        <div className="container-imagem">
-                            <img src={imagem} alt={descricao} className=""/>
-                        </div>
-                        <h2>R${String(preco.toFixed(2)).replace(".", ",")}</h2>
-                        <p>{descricao.slice(0, 73)}...</p>
-                        <button>Add</button>
-                    </div>
-                )
-            })}
-            
+            <RenderProdutos propsRenderProdutos={propsRenderProdutos}/>
+            {janelaProdutoAtiva?<JanelaProduto produtoEmDestaque={produtoEmDestaque}/>:<></>}
         </MainStyle>
     )
 }
+
+const MainStyle = styled.main`
+    display: flex;
+    flex-wrap: wrap;    
+`
