@@ -38,7 +38,7 @@ export default function JanelaProduto({ produtoEmDestaque, setJanelaProdutoAtiva
                 <h2 className="titulo">{nome}</h2>
                 <p className="preco">R$ {String(preco.toFixed(2)).replace(".", ",")}</p>
                 <ul>
-                    {especificacoes.map((especificacao) => <li>{especificacao}</li>)}
+                    {especificacoes.map((especificacao, index) => <li key={index}>{especificacao}</li>)}
                 </ul>
                 <BotaoAdicionarAoCarrinho id={id} token={token}/>
             </ContainerInformacoesStyle>

@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import JanelaProduto from "../JanelaProduto";
 import RenderProdutos from "../RenderProdutos";
+import Header from "../Header";
 
 export default function TelaHome() {
     // states 
@@ -12,7 +13,7 @@ export default function TelaHome() {
     // vars
     const dadosRecebidos = JSON.parse(localStorage.store);
     const { produtos, token } = dadosRecebidos;
-    const propsRenderProdutos = {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque};
+    const propsRenderProdutos = {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque, token};
    
     // functions 
     function RenderJanelaProduto(){
@@ -26,14 +27,18 @@ export default function TelaHome() {
     }
 
     return (
-        <MainStyle >
-            <RenderProdutos propsRenderProdutos={propsRenderProdutos}/>
-            <RenderJanelaProduto />
-        </MainStyle>
+        <>
+            <Header />
+            <MainStyle >
+                <RenderProdutos propsRenderProdutos={propsRenderProdutos}/>
+                <RenderJanelaProduto />
+            </MainStyle>
+        </>
     )
 }
 
 const MainStyle = styled.main`
     display: flex;
     flex-wrap: wrap;    
+    margin-top: 60px;
 `

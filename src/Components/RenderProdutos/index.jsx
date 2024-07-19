@@ -1,9 +1,12 @@
 import styled from "styled-components";
 
+import BotaoAdicionarAoCarrinho from "../BotaoAdicionarAoCarrinho";
+
+
 export default function RenderProdutos({ propsRenderProdutos }) {
 
     // vars
-    const { produtos, setJanelaProdutoAtiva, setProdutoEmDestaque } = propsRenderProdutos;
+    const { produtos, setJanelaProdutoAtiva, setProdutoEmDestaque, token } = propsRenderProdutos;
 
     // functions
     function ativarJanelaDeProdutos(produto) {
@@ -46,7 +49,7 @@ export default function RenderProdutos({ propsRenderProdutos }) {
                         <Descricao descricao={descricao}/>
                     </ContainerInformacoesProduto>
                     
-                    <button>Add</button>
+                    <BotaoAdicionarAoCarrinho id={id} token={token}/>
 
                 </StyleRenderProdutos>
             )
@@ -73,9 +76,14 @@ const StyleRenderProdutos = styled.div`
         cursor: pointer;
     }
 
-    button{
+    .container-botao{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+
         position: absolute;
         bottom: 10px;
+
     }
 `
 
