@@ -14,10 +14,21 @@ export default function TelaHome() {
     const { produtos, token } = dadosRecebidos;
     const propsRenderProdutos = {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque};
    
+    // functions 
+    function RenderJanelaProduto(){
+        return(
+            janelaProdutoAtiva && <JanelaProduto 
+                produtoEmDestaque={produtoEmDestaque}
+                setJanelaProdutoAtiva={setJanelaProdutoAtiva}
+                token={token}
+                />
+        )
+    }
+
     return (
         <MainStyle >
             <RenderProdutos propsRenderProdutos={propsRenderProdutos}/>
-            {janelaProdutoAtiva?<JanelaProduto produtoEmDestaque={produtoEmDestaque}/>:<></>}
+            <RenderJanelaProduto />
         </MainStyle>
     )
 }

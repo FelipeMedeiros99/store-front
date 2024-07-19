@@ -51,6 +51,19 @@ headers{
     idProduto: 12374930248302
 }
 
+
+----------------- REMOVER PRODUTO DO CARRINHO -----------
+delete("https://store-back-0hxp.onrender.com/remover-carrinho")
+
+headers{
+    "Authorization": "Bearer token"
+}
+
+{
+    idProduto: 12374930248302
+}
+
+
 ------------------ BUSCAR PRODUTOS CARRINHO ------------------
 get("https://store-back-0hxp.onrender.com/produtos-carrinho")
 

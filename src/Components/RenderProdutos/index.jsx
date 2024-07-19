@@ -1,25 +1,53 @@
 import styled from "styled-components";
 
-export default function RenderProdutos({propsRenderProdutos}) {
-    const {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque} = propsRenderProdutos;
+export default function RenderProdutos({ propsRenderProdutos }) {
+
+    // vars
+    const { produtos, setJanelaProdutoAtiva, setProdutoEmDestaque } = propsRenderProdutos;
+
+    // functions
+    function ativarJanelaDeProdutos(produto) {
+        setJanelaProdutoAtiva(true)
+        setProdutoEmDestaque(produto)
+    }
+
+    // components
+    function ContainerImagem({produto}) {
+        const { imagem, descricao } = produto;
+        return (
+            <div className="container-imagem">
+                <img src={imagem} alt={descricao} className="" />
+            </div>
+        )
+    }
+
+    function Preco({preco}){
+        return(
+            <h2>R${String(preco.toFixed(2)).replace(".", ",")}</h2>
+        )
+    }
+
+    function Descricao({descricao}){
+        return(
+            <p>{descricao.slice(0, 73)}...</p>
+        )
+    }
+
     return (
         produtos.map((produto) => {
-            const { nome, imagem, id, descricao, especificacoes, preco } = produto
+            const { nome, imagem, id, descricao, especificacoes, preco } = produto;
+            
             return (
                 <StyleRenderProdutos key={id} >
-                    <div className="container-informacoes" onClick={()=>{
 
-                    setJanelaProdutoAtiva(true)
-                    setProdutoEmDestaque(produto)
-                    }}>
-                        <div className="container-imagem">
-                            <img src={imagem} alt={descricao} className="" />
-                        </div>
-                        <h2>R${String(preco.toFixed(2)).replace(".", ",")}</h2>
-                        <p>{descricao.slice(0, 73)}...</p>
-                    </div>
-                    <button>Add</button>
+                    <ContainerInformacoesProduto onClick={() => ativarJanelaDeProdutos(produto)}>
+                        <ContainerImagem produto={produto}/>
+                        <Preco preco={preco}/>
+                        <Descricao descricao={descricao}/>
+                    </ContainerInformacoesProduto>
                     
+                    <button>Add</button>
+
                 </StyleRenderProdutos>
             )
         })
@@ -40,14 +68,24 @@ const StyleRenderProdutos = styled.div`
     position: relative;
     border: solid 1px;
     
-
-    .container-informacoes{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        height: 100%;
+    
+    :hover{
+        cursor: pointer;
     }
+
+    button{
+        position: absolute;
+        bottom: 10px;
+    }
+`
+
+const ContainerInformacoesProduto= styled.div`
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 
     p{
         font-size: 12px;
@@ -69,10 +107,4 @@ const StyleRenderProdutos = styled.div`
         width: auto;
         height: 100%;
     }
-
-    button{
-        position: absolute;
-        bottom: 10px;
-    }
-
 `
