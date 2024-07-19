@@ -1,15 +1,13 @@
 // modulos externos 
 import styled from "styled-components"
 import { IoMdClose } from "react-icons/io";
-import { useState } from "react";
 
 // modulos internos 
-import adicionarAoCarrinho from "../../Tools/adicionarAoCarrinho";
+import BotaoAdicionarAoCarrinho from "../BotaoAdicionarAoCarrinho" 
 
 export default function JanelaProduto({ produtoEmDestaque, setJanelaProdutoAtiva, token }) {
     // states
-    const [botaoInativo, setBotaoInativo] = useState(false)
-    const navigate = useNavigate()
+
     // vars
     const { nome, imagem, id, descricao, especificacoes, preco } = produtoEmDestaque;
 
@@ -42,9 +40,7 @@ export default function JanelaProduto({ produtoEmDestaque, setJanelaProdutoAtiva
                 <ul>
                     {especificacoes.map((especificacao) => <li>{especificacao}</li>)}
                 </ul>
-                <div className="container-botao">
-                    <button disabled={botaoInativo} onClick={(e, id)=>adicionarAoCarrinho(id, token)}>Add</button>
-                </div>
+                <BotaoAdicionarAoCarrinho id={id} token={token}/>
             </ContainerInformacoesStyle>
         )
     }
