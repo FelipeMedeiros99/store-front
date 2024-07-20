@@ -1,13 +1,17 @@
 import styled from "styled-components"
 import { IoMdMenu } from "react-icons/io";
+import { useContext } from "react";
+import Contexto from "../../context";
+
+import MenuLateral from "../MenuLateral";
 
 
-
-export default function Header({setTelaLateralAtiva}) {
+export default function Header(){
+    const {barraLateralAtiva, setBarraLateralAtiva} = useContext(Contexto)
     return (
         <HeaderStyle>
             <h1>STORE</h1>
-            <div className="container-icone" onClick={()=>setTelaLateralAtiva(true)}>
+            <div className="container-icone" onClick={()=>setBarraLateralAtiva(true)}>
                 <IoMdMenu/>
             </div>
         </HeaderStyle>

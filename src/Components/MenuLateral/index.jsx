@@ -3,30 +3,34 @@ import { IoCloseOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import Contexto from "../../context";
 
-export default function MenuLateral({setTelaLateralAtiva}){
+export default function MenuLateral() {
+    const { barraLateralAtiva, setBarraLateralAtiva } = useContext(Contexto)
     // vars 
     const navigate = useNavigate()
-    const dadosUsuario = JSON.parse(localStorage.store)
-    console.log(dadosUsuario)
-    return(
-        <MenuLateralStyle>
-            <div className="container-conteudo">
-                <div className="topo">
-                    <IoCloseOutline onClick={()=>setTelaLateralAtiva(false)}/>
-                    <CiLogout onClick={()=>navigate('/')}/>
-                </div>
-                <h2>Olá </h2>
-                <div className="links">
-                    <Link to="/home">Home</Link>
-                    <Link to="/carrinho">Carrinho</Link>
-                </div>
+    console.log("menu lateral: ", barraLateralAtiva)
 
-                
-
-            </div>
-        </MenuLateralStyle>
-    )
+    if (barraLateralAtiva) {
+        return (
+            <MenuLateralStyle>
+                <div className="container-conteudo">
+                    <div className="topo">
+                        <IoCloseOutline onClick={() => setBarraLateralAtiva(false)} />
+                        <CiLogout onClick={() => navigate('/')} />
+                    </div>
+                    <h2>Olá </h2>
+                    <div className="links">
+                        <Link to="/home" onClick={()=>setBarraLateralAtiva(false)}>Home</Link>
+                        <Link to="/carrinho" onClick={()=>setBarraLateralAtiva(false)}>Carrinho</Link>
+                    </div>
+                </div>
+            </MenuLateralStyle>
+        )
+    }else{
+        return(<></>)
+    }
 }
 
 const MenuLateralStyle = styled.nav`

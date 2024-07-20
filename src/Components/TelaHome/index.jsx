@@ -12,7 +12,6 @@ export default function TelaHome() {
     // states 
     const [janelaProdutoAtiva, setJanelaProdutoAtiva] = useState(false);
     const [produtoEmDestaque, setProdutoEmDestaque] = useState({});
-    const [telaLateralAtiva, setTelaLateralAtiva] = useState(false)
     const [dadosRecebidos, setDadosRecebidos] = useState(null)
     
     useEffect(()=>{
@@ -36,7 +35,6 @@ export default function TelaHome() {
     const { produtos, token } = dadosRecebidos;
     const propsRenderProdutos = {produtos, setJanelaProdutoAtiva, setProdutoEmDestaque, token};
 
-
     // functions 
     function RenderJanelaProduto(){
         return(
@@ -50,8 +48,8 @@ export default function TelaHome() {
 
     return (
         <>
-            <Header setTelaLateralAtiva={setTelaLateralAtiva}/>
-            {telaLateralAtiva && <MenuLateral setTelaLateralAtiva={setTelaLateralAtiva}/>}
+            <Header />
+            <MenuLateral/>
             <MainStyle >
                 <RenderProdutos propsRenderProdutos={propsRenderProdutos}/>
                 <RenderJanelaProduto />
