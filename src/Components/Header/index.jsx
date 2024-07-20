@@ -3,12 +3,12 @@ import { IoMdMenu } from "react-icons/io";
 
 
 
-export default function Header() {
+export default function Header({setTelaLateralAtiva}) {
     return (
         <HeaderStyle>
             <h1>STORE</h1>
-            <div className="container-icone">
-                <IoMdMenu />
+            <div className="container-icone" onClick={()=>setTelaLateralAtiva(true)}>
+                <IoMdMenu/>
             </div>
         </HeaderStyle>
     )

@@ -48,6 +48,11 @@ export default function TelaLogin() {
         setAguardandoRequisicao(false)
     }
 
+    function limparDados(){
+        localStorage.removeItem("store")
+    }
+
+    limparDados()
 
     return (
         <LoginCadastroStyle onSubmit={(e)=>submissao(e)}>
