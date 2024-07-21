@@ -3,14 +3,24 @@ import { IoCloseOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Contexto from "../../context";
 
 export default function MenuLateral() {
-    const { barraLateralAtiva, setBarraLateralAtiva } = useContext(Contexto)
+    const { barraLateralAtiva, setBarraLateralAtiva } = useContext(Contexto);
+    const [dadosUsuario, setDadosUsuario] = useState(null);
     // vars 
     const navigate = useNavigate()
-    console.log("menu lateral: ", barraLateralAtiva)
+
+    // buscando dados do usuário
+    useEffect(()=>{
+        const dados = localStorage.getItem("store")
+        if(!dados){
+            navigate("/")
+        }else(
+            setDadosUsuario(JSON.parse(dados)?.dadosUsuarioBanco)
+        )
+    },[])
 
     if (barraLateralAtiva) {
         return (
@@ -20,7 +30,7 @@ export default function MenuLateral() {
                         <IoCloseOutline onClick={() => setBarraLateralAtiva(false)} />
                         <CiLogout onClick={() => navigate('/')} />
                     </div>
-                    <h2>Olá </h2>
+                    <h2>Olá, {(dadosUsuario?.nome)[0].toUpperCase()}{(dadosUsuario?.nome).slice(1, )}!</h2>
                     <div className="links">
                         <Link to="/home" onClick={()=>setBarraLateralAtiva(false)}>Home</Link>
                         <Link to="/carrinho" onClick={()=>setBarraLateralAtiva(false)}>Carrinho</Link>
