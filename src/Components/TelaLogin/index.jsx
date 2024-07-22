@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
-
+import SpinLoader from "../SpinLoader"
+import { BsCartCheck } from "react-icons/bs";
 
 import LoginCadastroStyle from "../../StyleComponents/LoginCadastroStyle"
 import RenderizarInputs from "../../Tools/RenderInput"
@@ -56,11 +57,18 @@ export default function TelaLogin() {
 
     return (
         <LoginCadastroStyle onSubmit={(e)=>submissao(e)}>
-            <h1>Store</h1>
+            
+            <h1>STORE <BsCartCheck className="icone-carrinho"/></h1>
             <RenderizarInputs {...inputsProps}/>
-            <button type="submit" disabled={aguardandoRequisicao}>Login</button>
-
             {mensagemErro.visivel?<p>{mensagemErro.mensagem}</p>:<></>}
+            <button type="submit" disabled={aguardandoRequisicao}>
+                {aguardandoRequisicao?
+                <SpinLoader/>
+                :
+                "Login"
+                }
+            </button>
+
             
             <Link to={"/cadastro"}>Não possui conta? Cadastre-se!</Link>
         </LoginCadastroStyle>

@@ -305,6 +305,7 @@ const ContainerDescricaoStyle = styled.div`
         background-color: white;
         border: 1px solid #6d6d6d;
     }
+
     .alterar-valor:hover{
         cursor: pointer;
     }

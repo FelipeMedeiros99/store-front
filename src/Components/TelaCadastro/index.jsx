@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { BsCartCheck } from "react-icons/bs";
+import SpinLoader from "../SpinLoader"
 
-import LoginCadastroStyle from "../../StyleComponents/LoginCadastroStyle"
 import RenderizarInputs from "../../Tools/RenderInput"
+import LoginCadastroStyle from "../../StyleComponents/LoginCadastroStyle"
+
 
 export default function TelaCadastro() {
     // states 
@@ -56,13 +59,19 @@ export default function TelaCadastro() {
 
     return (
         <LoginCadastroStyle onSubmit={(e)=>submissao(e)}>
-            <h1>Store</h1>
-            <RenderizarInputs {...inputsProps}/>
-            <button type="submit" disabled={aguardandoRequisicao}>Login</button>
-
-            {mensagemErro.visivel?<p>{mensagemErro.mensagem}</p>:<></>}
             
-            <Link to={"/login"}>Não possui conta? Cadastre-se!</Link>
+            <h1>STORE <BsCartCheck className="icone-carrinho"/></h1>
+            <RenderizarInputs {...inputsProps}/>
+            {mensagemErro.visivel?<p>{mensagemErro.mensagem}</p>:<></>}
+            <button type="submit" disabled={aguardandoRequisicao}>
+                {aguardandoRequisicao?
+                <SpinLoader/>
+                :
+                "Cadastrar"
+                }
+            </button>
+            
+            <Link to={"/login"}>Já possui conta? Faça login!</Link>
         </LoginCadastroStyle>
     )
 }

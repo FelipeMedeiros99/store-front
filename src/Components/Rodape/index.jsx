@@ -40,4 +40,8 @@ const RodapeStyle = styled.footer`
         box-shadow: 0 0 3px #000000;
         min-height: 30px;
     }
+
+    button:disabled{
+        background-color: #8eb961;
+    }
 `

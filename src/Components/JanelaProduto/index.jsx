@@ -44,7 +44,7 @@ export default function JanelaProduto({ produtoEmDestaque, setJanelaProdutoAtiva
             </ContainerInformacoesStyle>
         )
     }
-
+    
     return (
         <StyleJanelaProduto>
             <ContainerImagem />
@@ -53,6 +53,21 @@ export default function JanelaProduto({ produtoEmDestaque, setJanelaProdutoAtiva
 
     )
 }
+
+
+const StyleJanelaProduto = styled.div`
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ecececb9;
+    height: 100%;
+    width: 100%;
+
+`
 
 
 const ContainerImagemStyle = styled.div`
@@ -117,27 +132,9 @@ const ContainerInformacoesStyle = styled.div`
 
 
 
-    .container-botao{
-        position: absolute;
-        bottom: 20px;
+    button{
         transform: translatex(-50%);
     }
 
-
-`
-
-
-const StyleJanelaProduto = styled.div`
-
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #ecececb9;
-    height: 100%;
-    width: 100%;
 
 `

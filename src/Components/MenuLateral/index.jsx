@@ -35,8 +35,8 @@ export default function MenuLateral() {
     function Topo(){
         return(
             <TopoStyle>
-                <IoCloseOutline onClick={() => setBarraLateralAtiva(false)} />
                 <CiLogout onClick={() => navigate('/')} />
+                <IoCloseOutline onClick={() => setBarraLateralAtiva(false)} />
             </TopoStyle>
         )
     }
@@ -87,6 +87,7 @@ const MenuLateralStyle = styled.nav`
     height: 100%;
     background-color: #c4c4c49d;
     z-index: 4;
+    transition: left 0.3s ease;
 `
 
 const ContainerConteudoStyle = styled.div`
