@@ -64,12 +64,15 @@ const StyleRenderProdutos = styled.div`
     flex-direction: column;
     align-items: center;
     width: 175px;
-    height: 225px;
-    border-radius: 5px;
-    margin: 5px;
+    height: 235px;
+    border-radius: 35px;
+    margin: 10px;
     padding: 10px 10px 35px 10px;
     position: relative;
-    border: solid 1px;
+    background-color: white;
+    box-shadow: 0px 1px 3px #0000009c;
+    
+
     
     
     :hover{

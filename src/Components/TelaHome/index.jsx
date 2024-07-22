@@ -68,5 +68,5 @@ const MainStyle = styled.main`
     display: flex;
     flex-wrap: wrap;    
     justify-content: center;
-    margin: 60px 30px 0 30px;
+    margin: 100px 30px 0 30px;
 `

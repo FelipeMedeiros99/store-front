@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import styled from "styled-components"
 
 export default function BotaoAdicionarAoCarrinho({id, token}){
     
@@ -32,10 +33,22 @@ export default function BotaoAdicionarAoCarrinho({id, token}){
     }
 
     return (
-        <div className="container-botao">
+        <BotaoStyle>
             <button disabled={botaoInativo} onClick={()=>adicionarAoCarrinho()}>Add</button>
-        </div>
+        </BotaoStyle>
     )
 }
 
-
+const BotaoStyle = styled.div`
+    position: absolute;
+    bottom: 10px;
+    button{
+        background-color: #6FBC1A;
+        border: none;
+        box-shadow: 0 0 3px #0000007b;
+        color: white;
+        border-radius: 30px;
+        width: 70px;
+        height: 30px;
+ }
+`
