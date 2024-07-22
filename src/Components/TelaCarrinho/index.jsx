@@ -200,14 +200,13 @@ const ContainerProduto = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
     background-color: #ffffff;
-    margin: 10px;
+    margin: 10px 0 10px 0;
     border-radius: 5px;
     height: 150px;
     width: 100%;
     max-width: 500px;
-
+    overflow-x: hidden;
     .container-icone{
         position: absolute;
         top: 10px;
@@ -252,7 +251,7 @@ const ContainerDescricaoEBotoes = styled.div`
 
     p{
         height: 100%;
-        max-height: 100px;
+        max-height: 80px;
         overflow-y: auto;
     }
 
