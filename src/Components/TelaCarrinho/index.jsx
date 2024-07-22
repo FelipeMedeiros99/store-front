@@ -13,10 +13,12 @@ export default function TelaCarrinho() {
     const [dadosRecebidos, setDadosRecebidos] = useState(null)
     const [checkBox, setCheckBox] = useState([])
     const [quantidadeProdutos, setQuantidadeProdutos] = useState([])
+    const [precoTotal, setPrecoTotal] = useState(0)
     // vars
 
-    // indo para tela de login em caso de não haver dados
+    // efeitos 
     useEffect(() => {
+        // indo para tela de login em caso de não haver dados
         const validarDadosRecebidos = localStorage.getItem("store")
         if (validarDadosRecebidos === null) {
             navigate("/")
@@ -25,8 +27,8 @@ export default function TelaCarrinho() {
         }
     }, [])
 
-    // buscando dados do carrinho
     useEffect(() => {
+        // buscando dados do carrinho
         async function buscarDadosDoCarrinho() {
             try {
                 if (dadosRecebidos !== null) {
@@ -36,29 +38,62 @@ export default function TelaCarrinho() {
                         }
                     }
                     const resposta = await axios.get("https://store-back-0hxp.onrender.com/produtos-carrinho", config)
-                    setElementosCarrinho([...resposta.data])
-                    const tamanhoResposta = resposta.data.length
+                    setElementosCarrinho([...resposta?.data])
+                    const tamanhoResposta = resposta?.data?.length
                     setCheckBox(new Array(tamanhoResposta).fill(false))
-                    setQuantidadeProdutos(new Array(tamanhoResposta).fill(0))
+                    setQuantidadeProdutos(new Array(tamanhoResposta).fill(1))
                 }
             } catch (e) {
-                alert(e.response.data)
+                alert(e?.response?.data)
                 navigate("/login")
             }
         }
         buscarDadosDoCarrinho()
     }, [dadosRecebidos])
 
+    useEffect(()=>{
+        // calcula o preço total
+        if(checkBox.length>0){
+            calculaPrecoTotal()
+        }
+    },[checkBox, quantidadeProdutos])
+
+    // functions
     function mudarQtProduto(index, valor){
         const copia = [...quantidadeProdutos]
         copia[index] += valor
-        if(copia[index] < 0){
-            copia[index] = 0
+        if(copia[index] < 1){
+            copia[index] = 1
         }
         setQuantidadeProdutos(copia)
     }  
 
-    console.log(elementosCarrinho)
+    function calculaPrecoTotal(){
+        // atualiza o preço total da compra em tempo real
+
+        setPrecoTotal(0)
+        checkBox.map((confirmacao, index)=>{
+            if (confirmacao){
+                let copiaPreco = precoTotal;
+                copiaPreco = elementosCarrinho[index].preco * quantidadeProdutos[index]
+                setPrecoTotal(copiaPreco)
+            }
+        })
+    }
+
+
+    // componentes 
+    function Rodape(){
+        return(
+            <RodapeStyle >
+                <p>Sub-Total: <span>{precoTotal}</span></p>
+                <button>Fechar pedido</button>
+            </RodapeStyle> 
+        )
+    }
+
+
+    console.log("ELEMENTOS CARRINHO: ", elementosCarrinho)
 
     return (
         <>
@@ -97,13 +132,16 @@ export default function TelaCarrinho() {
                     )
                     })
                 }
+
+
             </TelaCarrinhoStyle>
+            <Rodape />
         </>
     )
 }
 
 const TelaCarrinhoStyle = styled.div`
-    margin-top: 100px;   
+    padding: 50px 0 50px 0;
     `
 
 const ContainerProduto = styled.div`
@@ -137,7 +175,7 @@ const ContainerDescricaoEBotoes = styled.div`
     p{
         height: 100%;
         max-height: 100px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     .botoes{
@@ -147,4 +185,17 @@ const ContainerDescricaoEBotoes = styled.div`
         bottom: 10px;
         width: 100%;    
     }
+`
+
+
+const RodapeStyle = styled.footer`
+    position: fixed;
+    bottom: 0;
+    height: 50px;
+    background-color: #1A1FBC;
+    width: 100%;
+    display: flex;
+    justify-content: space-between  ;
+    align-items: center;
+    padding: 0 15px 0 15px;
 `
