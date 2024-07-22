@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { IoMdCheckmark } from "react-icons/io";
 import Header from "../Header"
 import MenuLateral from "../MenuLateral";
 import Rodape from "../Rodape";
+import Contexto from "../../context";
 
 export default function TelaCarrinho() {
     // -------------------- states ----------------------
@@ -19,6 +20,7 @@ export default function TelaCarrinho() {
     const [quantidadeProdutos, setQuantidadeProdutos] = useState([])
     const [precoTotal, setPrecoTotal] = useState(0)
     const [botaoFecharPedidoInativo, setBotaoFecharPedidoInativo] = useState(true)
+    const {setPaginaAtual} = useContext(Contexto)
 
     // -------------------- vars -------------------------
     const paramsRodape = {
@@ -172,17 +174,6 @@ export default function TelaCarrinho() {
                 </div>
             </CheckBoxStyle>
         )
-
-        // <input
-        //     type="checkbox"
-        //     checked={checkBox[index]}
-        //     onChange={(e) => {
-        //         const copiaCheckbox = [...checkBox]
-        //         copiaCheckbox[index] = e.target.checked
-        //         setCheckBox(copiaCheckbox)
-        //     }}
-        // />
-        // )
     }
 
     function ContainerImagem({ produto }) {
@@ -228,6 +219,9 @@ export default function TelaCarrinho() {
         )
     }
 
+    // informando a barra lateral a página atual
+    setPaginaAtual("carrinho")
+    
 
     return (
         <>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -6,14 +6,17 @@ import JanelaProduto from "../JanelaProduto";
 import RenderProdutos from "../RenderProdutos";
 import Header from "../Header";
 import MenuLateral from "../MenuLateral";
+import Contexto from "../../context";
 
 export default function TelaHome() {
-    const navigate = useNavigate()
     // states 
+    const navigate = useNavigate()
     const [janelaProdutoAtiva, setJanelaProdutoAtiva] = useState(false);
     const [produtoEmDestaque, setProdutoEmDestaque] = useState({});
     const [dadosRecebidos, setDadosRecebidos] = useState(null)
+    const {setPaginaAtual} = useContext(Contexto)
     
+
     useEffect(()=>{
         const validarDadosRecebidos = localStorage.getItem("store")
         if(validarDadosRecebidos===null){
@@ -46,6 +49,9 @@ export default function TelaHome() {
         )
     }
 
+    // informando a barra lateral a página atual
+    setPaginaAtual('home')
+
     return (
         <>
             <Header />
@@ -61,5 +67,6 @@ export default function TelaHome() {
 const MainStyle = styled.main`
     display: flex;
     flex-wrap: wrap;    
-    margin-top: 60px;
+    justify-content: center;
+    margin: 60px 30px 0 30px;
 `

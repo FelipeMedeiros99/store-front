@@ -17,10 +17,10 @@ import "./assets/index.css";
 
 function App() {
     const [barraLateralAtiva, setBarraLateralAtiva] = useState(false)
-    console.log(barraLateralAtiva)
+    const [paginaAtual, setPaginaAtual] = useState('home')
     
     return (
-        <Contexto.Provider value={{barraLateralAtiva, setBarraLateralAtiva}} >
+        <Contexto.Provider value={{barraLateralAtiva, setBarraLateralAtiva, paginaAtual, setPaginaAtual}} >
             <Router>
                 <Routes>
                     <Route path="/" element={<Navigate to={"/login"} />} />

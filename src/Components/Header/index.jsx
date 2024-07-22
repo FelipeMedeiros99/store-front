@@ -2,15 +2,14 @@ import styled from "styled-components"
 import { IoMdMenu } from "react-icons/io";
 import { useContext } from "react";
 import Contexto from "../../context";
-
-import MenuLateral from "../MenuLateral";
+import { BsCartCheck } from "react-icons/bs";
 
 
 export default function Header(){
-    const {barraLateralAtiva, setBarraLateralAtiva} = useContext(Contexto)
+    const {setBarraLateralAtiva} = useContext(Contexto)
     return (
         <HeaderStyle>
-            <h1>STORE</h1>
+            <h1>STORE <BsCartCheck /></h1>
             <div className="container-icone" onClick={()=>setBarraLateralAtiva(true)}>
                 <IoMdMenu/>
             </div>
@@ -34,6 +33,17 @@ const HeaderStyle = styled.header`
 
     :hover{
         cursor: pointer;
+    }
+
+    h1{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 140px;
+    }
+
+    svg{
+        font-size: 27px;
     }
 
 
