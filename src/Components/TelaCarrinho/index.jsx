@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { IoMdCheckmark } from "react-icons/io";
 
 import Header from "../Header"
 import MenuLateral from "../MenuLateral";
+import Rodape from "../Rodape";
 
 export default function TelaCarrinho() {
-    // states 
+    // -------------------- states ----------------------
+
     const navigate = useNavigate()
     const [elementosCarrinho, setElementosCarrinho] = useState([])
     const [dadosRecebidos, setDadosRecebidos] = useState(null)
@@ -16,87 +19,94 @@ export default function TelaCarrinho() {
     const [quantidadeProdutos, setQuantidadeProdutos] = useState([])
     const [precoTotal, setPrecoTotal] = useState(0)
     const [botaoFecharPedidoInativo, setBotaoFecharPedidoInativo] = useState(true)
-    // vars
 
-    // efeitos 
+    // -------------------- vars -------------------------
+    const paramsRodape = {
+        valor: precoTotal,
+        funcaoFinalizar: fecharPedido,
+        ativadorBotaoFechar: botaoFecharPedidoInativo
+    }
+
+    // ------------------ efeitos ---------------------------
+
     useEffect(() => {
         // indo para tela de login em caso de não haver dados
         const validarDadosRecebidos = localStorage.getItem("store")
         if (validarDadosRecebidos === null) {
+            alert("Faça login novamente")
             navigate("/")
         } else {
             setDadosRecebidos(JSON.parse(validarDadosRecebidos))
         }
     }, [])
 
+
     useEffect(() => {
-            // buscando dados do carrinho
-    async function buscarDadosDoCarrinho() {
-        try {
-            if (dadosRecebidos !== null) {
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${dadosRecebidos?.token}`
+        // buscando dados do carrinho
+        async function buscarDadosDoCarrinho() {
+            try {
+                if (dadosRecebidos !== null) {
+                    const config = {
+                        headers: {
+                            Authorization: `Bearer ${dadosRecebidos?.token}`
+                        }
                     }
+                    const resposta = await axios.get("https://store-back-0hxp.onrender.com/produtos-carrinho", config)
+                    setElementosCarrinho([...resposta?.data])
+                    const tamanhoResposta = resposta?.data?.length
+                    setCheckBox(new Array(tamanhoResposta).fill(false))
+                    setQuantidadeProdutos(new Array(tamanhoResposta).fill(1))
                 }
-                const resposta = await axios.get("https://store-back-0hxp.onrender.com/produtos-carrinho", config)
-                setElementosCarrinho([...resposta?.data])
-                const tamanhoResposta = resposta?.data?.length
-                setCheckBox(new Array(tamanhoResposta).fill(false))
-                setQuantidadeProdutos(new Array(tamanhoResposta).fill(1))
+            } catch (e) {
+                alert(e?.response?.data)
+                navigate("/login")
             }
-        } catch (e) {
-            alert(e?.response?.data)
-            navigate("/login")
         }
-    }
         buscarDadosDoCarrinho()
     }, [dadosRecebidos])
 
-    useEffect(()=>{
+
+    useEffect(() => {
         // calcula o preço total
-        if(checkBox.length>0){
+        if (checkBox.length > 0) {
             calculaPrecoTotal()
         }
-    },[checkBox, quantidadeProdutos])
+    }, [checkBox, quantidadeProdutos])
 
-    useEffect(()=>{
+
+    useEffect(() => {
         // ativa botao de fechar pedido
         setBotaoFecharPedidoInativo(true)
         const haCheckBoxAtivo = checkBox.includes(true)
-        if(haCheckBoxAtivo){
+        if (haCheckBoxAtivo) {
             setBotaoFecharPedidoInativo(false)
         }
 
     }, checkBox)
 
 
-
-    // functions
-
-    function mudarQtProduto(index, valor){
+    // -------------- functions -------------------
+    function mudarQtProduto(index, valor) {
         const copia = [...quantidadeProdutos]
         copia[index] += valor
-        if(copia[index] < 1){
+        if (copia[index] < 1) {
             copia[index] = 1
         }
         setQuantidadeProdutos(copia)
-    }  
-
-    function calculaPrecoTotal(){
-        // atualiza o preço total da compra em tempo real
-
-        setPrecoTotal(0)
-        checkBox.map((confirmacao, index)=>{
-            if (confirmacao){
-                let copiaPreco = precoTotal;
-                copiaPreco = elementosCarrinho[index].preco * quantidadeProdutos[index]
-                setPrecoTotal(copiaPreco)
-            }
-        })
     }
 
-    async function removerDoCarrinho(id){
+    function calculaPrecoTotal() {
+        // atualiza o preço total da compra em tempo real
+        let soma = 0
+        checkBox.map((estaMarcado, index) => {
+            if (estaMarcado) {
+                soma += elementosCarrinho[index].preco * quantidadeProdutos[index]
+            }
+        })
+        setPrecoTotal(soma)
+    }
+
+    async function removerDoCarrinho(id) {
         const config = {
             headers: {
                 Authorization: `Bearer ${dadosRecebidos?.token}`
@@ -105,25 +115,24 @@ export default function TelaCarrinho() {
                 idProduto: id
             }
         }
-        try{
-            
+        try {
+
             await axios.delete("https://store-back-0hxp.onrender.com/remover-carrinho", config)
-            setDadosRecebidos({...dadosRecebidos})
-        }catch(e){
-            console.log(e.response)
+            setDadosRecebidos({ ...dadosRecebidos })
+        } catch (e) {
             alert(e.response.data)
         }
     }
 
-    async function fecharPedido(){
+    async function fecharPedido() {
         const config = {
             headers: {
                 Authorization: `Bearer ${dadosRecebidos?.token}`
             }
         }
-        
-        elementosCarrinho.map((elemento, index)=>{
-            if(checkBox[index]){
+
+        elementosCarrinho.map((elemento, index) => {
+            if (checkBox[index]) {
                 removerDoCarrinho(elemento.id)
             }
         })
@@ -132,13 +141,90 @@ export default function TelaCarrinho() {
 
     }
 
-    // componentes 
-    function Rodape(){
-        return(
-            <RodapeStyle >
-                <p>Sub-Total: <span>{precoTotal}</span></p>
-                <button onClick={fecharPedido} disabled={botaoFecharPedidoInativo}>Fechar pedido</button>
-            </RodapeStyle> 
+    // ------------------ componentes ---------------------- 
+    function ContainerIconeDeletar({ id }) {
+        return (
+            <ContainerIconeDeletarStyle onClick={() => removerDoCarrinho(id)}>
+                <FaRegTrashAlt />
+            </ContainerIconeDeletarStyle>
+        )
+    }
+
+    function desmarcarCkeckBox(index) {
+        let copia = [...checkBox];
+        copia[index] = !copia[index];
+        setCheckBox(copia)
+    }
+
+    function CheckBox({ index }) {
+        if (checkBox[index]) {
+            return (
+                <CheckBoxStyle onClick={() => desmarcarCkeckBox(index)}>
+                    <div className="container-checkbox marcado">
+                        <IoMdCheckmark />
+                    </div>
+                </CheckBoxStyle>
+            )
+        }
+        return (
+            <CheckBoxStyle onClick={() => desmarcarCkeckBox(index)}>
+                <div className="container-checkbox">
+                </div>
+            </CheckBoxStyle>
+        )
+
+        // <input
+        //     type="checkbox"
+        //     checked={checkBox[index]}
+        //     onChange={(e) => {
+        //         const copiaCheckbox = [...checkBox]
+        //         copiaCheckbox[index] = e.target.checked
+        //         setCheckBox(copiaCheckbox)
+        //     }}
+        // />
+        // )
+    }
+
+    function ContainerImagem({ produto }) {
+        return (
+            <ContainerImagemStyle>
+                <img src={produto.imagem} alt={produto.descricao} />
+                <p>R${String(produto.preco.toFixed(2)).replace(".", ",")}</p>
+            </ContainerImagemStyle>
+        )
+    }
+
+    function ContainerDescricao({ descricao, index }) {
+        return (
+            <ContainerDescricaoStyle >
+                <p>{descricao}</p>
+                <div className="botoes">
+                    <button className="alterar-valor" onClick={() => mudarQtProduto(index, -1)}>-</button>
+                    <button>{quantidadeProdutos[index]}</button>
+                    <button className="alterar-valor" onClick={() => mudarQtProduto(index, 1)}>+</button>
+                </div>
+            </ContainerDescricaoStyle>
+        )
+    }
+
+    function ProdutosCarrinho() {
+        if (elementosCarrinho.length === 0) {
+            return (
+                <p>Seu carrinho está vazio ;(</p>
+            )
+        }
+        return (
+            elementosCarrinho.map((produto, index) => {
+                const { descricao } = produto
+                return (
+                    <ContainerProdutoStyled key={index}>
+                        <ContainerIconeDeletar id={produto.id} />
+                        <CheckBox index={index} />
+                        <ContainerImagem produto={produto} />
+                        <ContainerDescricao descricao={descricao} index={index} />
+                    </ContainerProdutoStyled>
+                )
+            })
         )
     }
 
@@ -148,78 +234,33 @@ export default function TelaCarrinho() {
             <Header />
             <MenuLateral />
             <TelaCarrinhoStyle>
-
-                {elementosCarrinho.length===0?
-                    <p>seu carrinho está vazio ;(</p>
-                    :
-                    elementosCarrinho.map((produto, index)=>{
-                    return (
-                        <ContainerProduto key={index}>
-                            <div className="container-icone" onClick={()=>removerDoCarrinho(produto.id)}>
-                                <FaRegTrashAlt />
-                            </div>
-                            <input 
-                                type="checkbox" 
-                                checked={checkBox[index]}
-                                onChange={(e)=>{
-                                    const copiaCheckbox = [...checkBox]
-                                    copiaCheckbox[index] = e.target.checked
-                                    setCheckBox(copiaCheckbox)
-                                }}
-                            />
-                            <ContainerImagem>
-                                <img src={produto.imagem} alt={produto.descricao} />
-                                <p>R${String(produto.preco.toFixed(2)).replace(".", ",")}</p>
-                            </ContainerImagem>
-
-                            <ContainerDescricaoEBotoes >
-                                <p>{produto.descricao}</p>
-                                <div className="botoes">
-                                    <button onClick={()=>mudarQtProduto(index, -1)}>-</button>
-                                    <button>{quantidadeProdutos[index]}</button>
-                                    <button onClick={()=>mudarQtProduto(index, 1)}>+</button>
-                                </div>
-                            </ContainerDescricaoEBotoes>
-                        </ContainerProduto>
-                    )
-                    })
-                }
-
-
+                <ProdutosCarrinho />
             </TelaCarrinhoStyle>
-            <Rodape />
+            <Rodape paramsRodape={paramsRodape} />
         </>
     )
+
 }
 
 const TelaCarrinhoStyle = styled.div`
     padding: 50px 0 50px 0;
     `
 
-const ContainerProduto = styled.div`
+const ContainerProdutoStyled = styled.div`
     position: relative;
     display: flex;
     align-items: center;
     background-color: #ffffff;
     margin: 10px 0 10px 0;
-    border-radius: 5px;
+    padding: 0 0 0 15px;
+    border-radius: 30px;
     height: 150px;
     width: 100%;
     max-width: 500px;
     overflow-x: hidden;
-    .container-icone{
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 3;
-        font-size: 15px;
-    }
-    .container-icone:hover{
-        cursor:pointer;
-    }
 `
 
-const ContainerImagem = styled.div`
+const ContainerImagemStyle = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -243,16 +284,20 @@ const ContainerImagem = styled.div`
     }
 `
 
-const ContainerDescricaoEBotoes = styled.div`
+const ContainerDescricaoStyle = styled.div`
     position: relative;
     height: 100%;
     width: 100%;
-    padding: 30px 10px 0 10px;
+    max-width: 320px;
+    padding: 30px 25px 0 10px;
 
     p{
         height: 100%;
+        text-align: justify;
         max-height: 80px;
         overflow-y: auto;
+        width: 100%;
+        max-width: 300px;
     }
 
     .botoes{
@@ -262,17 +307,48 @@ const ContainerDescricaoEBotoes = styled.div`
         bottom: 10px;
         width: 100%;    
     }
+    button{
+        background-color: white;
+        border: 1px solid #6d6d6d;
+    }
+    .alterar-valor:hover{
+        cursor: pointer;
+    }
 `
 
 
-const RodapeStyle = styled.footer`
-    position: fixed;
-    bottom: 0;
-    height: 50px;
-    background-color: #1A1FBC;
-    width: 100%;
-    display: flex;
-    justify-content: space-between  ;
-    align-items: center;
-    padding: 0 15px 0 15px;
+const ContainerIconeDeletarStyle = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    font-size: 15px;
+    
+    :hover{
+        cursor:pointer;
+    }
 `
+
+const CheckBoxStyle = styled.div`
+    :hover{
+        cursor: pointer;
+    }
+    .container-checkbox{
+        width: 25px;
+        min-width: 25px;
+        height: 250x;
+        min-height: 25px;
+        border: 1px solid;
+        z-index: 3;
+    }
+    
+    .marcado{
+        background-color: #6FBC1A;
+    }
+
+    svg{
+        width: 100%;
+        height: 100%;
+        color: white;
+    }
+`   

@@ -23,7 +23,7 @@ const HeaderStyle = styled.header`
     top: 0;
     width: 100%;
     height: 50px;
-    z-index: 2;
+    z-index: 4;
     background-color: #1A1FBC;
     display: flex;
     align-items: center;
