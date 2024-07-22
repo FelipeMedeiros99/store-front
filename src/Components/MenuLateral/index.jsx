@@ -48,7 +48,7 @@ const MenuLateralStyle = styled.nav`
     width: 100%;
     height: 100%;
     background-color: #c4c4c49d;
-    z-index: 3;
+    z-index: 4;
     .container-conteudo{
         position: fixed;
         right: 0;

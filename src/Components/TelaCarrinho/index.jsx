@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-
-import MenuLateral from "../MenuLateral";
-import Header from "../Header"
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { FaRegTrashAlt } from "react-icons/fa";
+
+import Header from "../Header"
+import MenuLateral from "../MenuLateral";
 
 export default function TelaCarrinho() {
     // states 
@@ -14,6 +15,7 @@ export default function TelaCarrinho() {
     const [checkBox, setCheckBox] = useState([])
     const [quantidadeProdutos, setQuantidadeProdutos] = useState([])
     const [precoTotal, setPrecoTotal] = useState(0)
+    const [botaoFecharPedidoInativo, setBotaoFecharPedidoInativo] = useState(true)
     // vars
 
     // efeitos 
@@ -28,26 +30,26 @@ export default function TelaCarrinho() {
     }, [])
 
     useEffect(() => {
-        // buscando dados do carrinho
-        async function buscarDadosDoCarrinho() {
-            try {
-                if (dadosRecebidos !== null) {
-                    const config = {
-                        headers: {
-                            Authorization: `Bearer ${dadosRecebidos?.token}`
-                        }
+            // buscando dados do carrinho
+    async function buscarDadosDoCarrinho() {
+        try {
+            if (dadosRecebidos !== null) {
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${dadosRecebidos?.token}`
                     }
-                    const resposta = await axios.get("https://store-back-0hxp.onrender.com/produtos-carrinho", config)
-                    setElementosCarrinho([...resposta?.data])
-                    const tamanhoResposta = resposta?.data?.length
-                    setCheckBox(new Array(tamanhoResposta).fill(false))
-                    setQuantidadeProdutos(new Array(tamanhoResposta).fill(1))
                 }
-            } catch (e) {
-                alert(e?.response?.data)
-                navigate("/login")
+                const resposta = await axios.get("https://store-back-0hxp.onrender.com/produtos-carrinho", config)
+                setElementosCarrinho([...resposta?.data])
+                const tamanhoResposta = resposta?.data?.length
+                setCheckBox(new Array(tamanhoResposta).fill(false))
+                setQuantidadeProdutos(new Array(tamanhoResposta).fill(1))
             }
+        } catch (e) {
+            alert(e?.response?.data)
+            navigate("/login")
         }
+    }
         buscarDadosDoCarrinho()
     }, [dadosRecebidos])
 
@@ -58,7 +60,20 @@ export default function TelaCarrinho() {
         }
     },[checkBox, quantidadeProdutos])
 
+    useEffect(()=>{
+        // ativa botao de fechar pedido
+        setBotaoFecharPedidoInativo(true)
+        const haCheckBoxAtivo = checkBox.includes(true)
+        if(haCheckBoxAtivo){
+            setBotaoFecharPedidoInativo(false)
+        }
+
+    }, checkBox)
+
+
+
     // functions
+
     function mudarQtProduto(index, valor){
         const copia = [...quantidadeProdutos]
         copia[index] += valor
@@ -81,31 +96,68 @@ export default function TelaCarrinho() {
         })
     }
 
+    async function removerDoCarrinho(id){
+        const config = {
+            headers: {
+                Authorization: `Bearer ${dadosRecebidos?.token}`
+            },
+            data: {
+                idProduto: id
+            }
+        }
+        try{
+            
+            await axios.delete("https://store-back-0hxp.onrender.com/remover-carrinho", config)
+            setDadosRecebidos({...dadosRecebidos})
+        }catch(e){
+            console.log(e.response)
+            alert(e.response.data)
+        }
+    }
+
+    async function fecharPedido(){
+        const config = {
+            headers: {
+                Authorization: `Bearer ${dadosRecebidos?.token}`
+            }
+        }
+        
+        elementosCarrinho.map((elemento, index)=>{
+            if(checkBox[index]){
+                removerDoCarrinho(elemento.id)
+            }
+        })
+        alert("compra finalizada!")
+        navigate("/home")
+
+    }
 
     // componentes 
     function Rodape(){
         return(
             <RodapeStyle >
                 <p>Sub-Total: <span>{precoTotal}</span></p>
-                <button>Fechar pedido</button>
+                <button onClick={fecharPedido} disabled={botaoFecharPedidoInativo}>Fechar pedido</button>
             </RodapeStyle> 
         )
     }
 
-
-    console.log("ELEMENTOS CARRINHO: ", elementosCarrinho)
 
     return (
         <>
             <Header />
             <MenuLateral />
             <TelaCarrinhoStyle>
+
                 {elementosCarrinho.length===0?
-                    <p>Você não adicionou nada ao carrinho</p>
+                    <p>seu carrinho está vazio ;(</p>
                     :
                     elementosCarrinho.map((produto, index)=>{
                     return (
                         <ContainerProduto key={index}>
+                            <div className="container-icone" onClick={()=>removerDoCarrinho(produto.id)}>
+                                <FaRegTrashAlt />
+                            </div>
                             <input 
                                 type="checkbox" 
                                 checked={checkBox[index]}
@@ -117,7 +169,7 @@ export default function TelaCarrinho() {
                             />
                             <ContainerImagem>
                                 <img src={produto.imagem} alt={produto.descricao} />
-                                <p>{produto.preco}</p>
+                                <p>R${String(produto.preco.toFixed(2)).replace(".", ",")}</p>
                             </ContainerImagem>
 
                             <ContainerDescricaoEBotoes >
@@ -145,25 +197,50 @@ const TelaCarrinhoStyle = styled.div`
     `
 
 const ContainerProduto = styled.div`
-    
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
-    background-color: aliceblue;
+    background-color: #ffffff;
     margin: 10px;
     border-radius: 5px;
-    height: 200px;
+    height: 150px;
     width: 100%;
     max-width: 500px;
+
+    .container-icone{
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 3;
+        font-size: 15px;
+    }
+    .container-icone:hover{
+        cursor:pointer;
+    }
 `
 
 const ContainerImagem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding-bottom: 30px;
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    position: relative;
 
     img{
-        width: 200px;
+        height: 100px;
+    }
+
+    p{
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        bottom: 10px;
+
     }
 `
 
@@ -171,6 +248,7 @@ const ContainerDescricaoEBotoes = styled.div`
     position: relative;
     height: 100%;
     width: 100%;
+    padding: 30px 10px 0 10px;
 
     p{
         height: 100%;
